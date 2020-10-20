@@ -78,7 +78,7 @@ def make_qid_to_has_ans(dataset):
     for article in dataset:
         for p in article['paragraphs']:
             for qa in p['qas']:
-                qid_to_has_ans[qa['id']] = bool(qa['answers'])
+                qid_to_has_ans[qa['id']] = bool('answers' in qa)
     return qid_to_has_ans
 
 
@@ -137,7 +137,7 @@ def get_raw_scores(dataset, preds):
                 gold_answers = [
                     a['text'] for a in qa['answers']
                     if normalize_answer(a['text'])
-                ]
+                ] if 'answers' in qa else []
                 if not gold_answers:
                     # For unanswerable questions, only correct answer is empty string
                     gold_answers = ['']
@@ -356,10 +356,10 @@ def find_all_best_thresh_v2(main_eval, preds, exact_raw, f1_raw, na_probs,
 
 
 def main(OPTS):
-    with open(OPTS.data_file) as f:
+    with open(OPTS.data_file, encoding='utf-8') as f:
         dataset_json = json.load(f)
         dataset = dataset_json['data']
-    with open(OPTS.pred_file) as f:
+    with open(OPTS.pred_file, encoding='utf-8') as f:
         preds = json.load(f)
     if OPTS.na_prob_file:
         with open(OPTS.na_prob_file) as f:
@@ -393,9 +393,9 @@ def main(OPTS):
         histogram_na_prob(na_probs, no_ans_qids, OPTS.out_image_dir, 'noAns')
     if OPTS.out_file:
         with open(OPTS.out_file, 'w') as f:
-            json.dump(out_eval, f)
+            json.dump(out_eval, f, ensure_ascii=False)
     else:
-        print(json.dumps(out_eval, indent=2))
+        print(json.dumps(out_eval, indent=2, ensure_ascii=False))
     return out_eval
 
 

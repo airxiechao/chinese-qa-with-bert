@@ -1,0 +1,5 @@
+python interactive.py  --output_dir output  --model_type bert  --predict_file data/temp.json  --state_dict output/pytorch_model.bin  --model_name_or_path bert-base-chinese
+
+
+python bert_qa.py --model_type bert --model_name_or_path bert-base-chinese --do_eval --do_lower_case --train_file data/cmrc2018_train.json --predict_file data/cmrc2018_trial.json --max_seq_length 384 --doc_stride 128 --output_dir output
+

@@ -23,7 +23,7 @@ import math
 import collections
 from io import open
 
-from pytorch_transformers.tokenization_bert import BasicTokenizer, whitespace_tokenize
+from transformers.tokenization_bert import BasicTokenizer, whitespace_tokenize
 
 # Required by XLNet evaluation method to compute optimal threshold (see write_predictions_extended() method)
 from utils_squad_evaluate import find_all_best_thresh_v2, make_qid_to_has_ans, get_raw_scores
@@ -684,15 +684,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 all_predictions[example.qas_id] = best_non_null_entry.text
         all_nbest_json[example.qas_id] = nbest_json
 
-    with open(output_prediction_file, "w") as writer:
-        writer.write(json.dumps(all_predictions, indent=4) + "\n")
+    with open(output_prediction_file, "w", encoding='utf-8') as writer:
+        writer.write(json.dumps(all_predictions, indent=4, ensure_ascii=False) + "\n")
 
-    with open(output_nbest_file, "w") as writer:
-        writer.write(json.dumps(all_nbest_json, indent=4) + "\n")
+    with open(output_nbest_file, "w", encoding='utf-8') as writer:
+        writer.write(json.dumps(all_nbest_json, indent=4, ensure_ascii=False) + "\n")
 
     if version_2_with_negative:
-        with open(output_null_log_odds_file, "w") as writer:
-            writer.write(json.dumps(scores_diff_json, indent=4) + "\n")
+        with open(output_null_log_odds_file, "w", encoding='utf-8') as writer:
+            writer.write(json.dumps(scores_diff_json, indent=4, ensure_ascii=False) + "\n")
 
     return all_predictions
 
@@ -864,15 +864,15 @@ def write_predictions_extended(
 
         all_nbest_json[example.qas_id] = nbest_json
 
-    with open(output_prediction_file, "w") as writer:
-        writer.write(json.dumps(all_predictions, indent=4) + "\n")
+    with open(output_prediction_file, "w", encoding='utf-8') as writer:
+        writer.write(json.dumps(all_predictions, indent=4, ensure_ascii=False) + "\n")
 
-    with open(output_nbest_file, "w") as writer:
-        writer.write(json.dumps(all_nbest_json, indent=4) + "\n")
+    with open(output_nbest_file, "w", encoding='utf-8') as writer:
+        writer.write(json.dumps(all_nbest_json, indent=4, ensure_ascii=False) + "\n")
 
     if version_2_with_negative:
-        with open(output_null_log_odds_file, "w") as writer:
-            writer.write(json.dumps(scores_diff_json, indent=4) + "\n")
+        with open(output_null_log_odds_file, "w", encoding='utf-8') as writer:
+            writer.write(json.dumps(scores_diff_json, indent=4, ensure_ascii=False) + "\n")
 
     with open(orig_data_file, "r", encoding='utf-8') as reader:
         orig_data = json.load(reader)["data"]

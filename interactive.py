@@ -1,7 +1,7 @@
 import json
 import torch
 import argparse
-from pytorch_transformers import (BertConfig, BertForQuestionAnswering,
+from transformers import (BertConfig, BertForQuestionAnswering,
                                   BertTokenizer)
 from bert_qa import evaluate
 import os
@@ -252,14 +252,21 @@ input_file = args.predict_file
 
 
 def handle_file(input_file, context, question):
-    with open(input_file, "r") as reader:
-        orig_data = json.load(reader)
-        orig_data["data"][0]['paragraphs'][0]['context'] = context
-        for i in range(len(question)):
-            orig_data["data"][0]['paragraphs'][0]['qas'][i][
-                'question'] = question[i]
-    with open(input_file, "w") as writer:
-        writer.write(json.dumps(orig_data, indent=4) + "\n")
+    orig_data = {
+        "data": [{
+            "paragraphs": [{
+                "context": context,
+                "qas": []
+            }]
+        }]
+    }
+    for i in range(len(question)):
+        orig_data["data"][0]['paragraphs'][0]['qas'].append({
+            'question': question[i],
+            'id': str(i)
+        })
+    with open(input_file, "w", encoding='utf-8') as writer:
+        writer.write(json.dumps(orig_data, indent=4, ensure_ascii=False) + "\n")
 
 
 def run():
@@ -287,9 +294,9 @@ def run():
         evaluate(args, model, tokenizer)
 
         predict_file = os.path.join(args.output_dir, "predictions_.json")
-        with open(predict_file, "r") as reader:
+        with open(predict_file, "r", encoding='utf-8') as reader:
             orig_data = json.load(reader)
-            print(orig_data[""])
+            print(orig_data)
         # clean input file
         handle_file(input_file, "", ["", "", ""])
 
